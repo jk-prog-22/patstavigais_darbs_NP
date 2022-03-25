@@ -31,14 +31,22 @@ if constant.DEBUG == True:
     requests_log.setLevel(logging.DEBUG)
     requests_log.propagate = True
 
-def getClassifieds(url = constant.BASE, filters = []):
-    page = requests.post(url, headers = headers, data = postData, timeout = constant.TIMEOUT)
+def getClassifieds(url = constant.FILTER, filters = []):
+    session = requests.Session()
+    page = session.post(url, headers = headers, data = postData, timeout = constant.TIMEOUT, allow_redirects = True)
     if page.status_code == 200:
         soup = BeautifulSoup(page.content, 'html.parser')
 
         vehicles = soup.findAll("tr", {"id" : lambda L: L and L.startswith('tr_')})
         for vehicle in vehicles:
-            print(vehicle.text)
+            elements = vehicle.findAll("td")
+            href = elements[1].find("a", href=True)["href"]
+            classified = session.get(constant.BASE + href, headers = headers, timeout = constant.TIMEOUT)
+            if page.status_code == 200:
+                print("Fetching data for", href)
+            else:
+                print("Unable to fetch data for", href)
+            break
     else:
         print("Error fetching classifieds.")
 
