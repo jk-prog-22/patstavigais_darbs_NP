@@ -46,10 +46,12 @@ def getClassifieds(url = constant.FILTER, filters = constant.FILTERS):
                         year = int(cSoup.find("td", {"id": "tdo_18"}).text.split()[0])
                     except AttributeError:
                         print(f"{bcolors.WARNING}Skipping: Unable to retrieve year for", href)
+                        continue
                     try:
                         price = int(cSoup.find("span", {"id": "tdo_8"}).text.replace(" ", "").replace("€", ""))
                     except AttributeError:
                         print(f"{bcolors.WARNING}Skipping: Unable to retrieve price for", href)
+                        continue
 
                     # Filtering year
                     # TODO: Probably could use range with one if call
