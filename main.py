@@ -1,5 +1,6 @@
 import requests
 import constant
+import logging
 from bs4 import BeautifulSoup
 
 headers = {
@@ -19,6 +20,16 @@ postData = {
     "opt[17]": "",
     "sid": "/en/transport/cars/today/filter/"
 }
+
+if constant.DEBUG == True:
+    import http.client as http_client
+    http_client.HTTPConnection.debuglevel = 1
+
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.DEBUG)
+    requests_log = logging.getLogger("requests.packages.urllib3")
+    requests_log.setLevel(logging.DEBUG)
+    requests_log.propagate = True
 
 def getClassifieds(url = constant.BASE, filters = []):
     page = requests.post(url, headers = headers, data = postData, timeout = constant.TIMEOUT)
