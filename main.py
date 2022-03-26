@@ -80,7 +80,7 @@ def getClassifieds(url = constant.FILTER):
         print("Error fetching classifieds.")
     
     if "page" in nextPage:
-        print(nextPage)
+        print(f"{bcolors.OKBLUE}Switching page:", nextPage)
         getClassifieds(constant.BASE + nextPage)
 
 getClassifieds()
