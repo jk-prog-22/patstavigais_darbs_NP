@@ -48,21 +48,21 @@ def getClassifieds(url = constant.FILTER):
                     try:
                         year = int(cSoup.find("td", {"id": "tdo_18"}).text.split()[0])
                     except AttributeError:
-                        print(f"{bcolors.WARNING}Skipping: Unable to retrieve year for", href)
+                        print(f"{bcolors.WARNING}Skipping: Unable to retrieve year for", href + bcolors.ENDC)
                         continue
 
                     # Parsing the vehicles price
                     try:
                         price = int(cSoup.find("span", {"id": "tdo_8"}).text.replace(" ", "").replace("€", ""))
                     except AttributeError:
-                        print(f"{bcolors.WARNING}Skipping: Unable to retrieve price for", href)
+                        print(f"{bcolors.WARNING}Skipping: Unable to retrieve price for", href + bcolors.ENDC)
                         continue
 
                     # Parsing the vehicles engine capacity
                     try:
                         capacity = float(cSoup.find("td", {"id": "tdo_15"}).text.split()[0])
                     except AttributeError:
-                        print(f"{bcolors.WARNING}Skipping: Unable to retrieve engine capacity for", href)
+                        print(f"{bcolors.WARNING}Skipping: Unable to retrieve engine capacity for", href + bcolors.ENDC)
                         continue
 
                     # Filtering year
@@ -70,42 +70,42 @@ def getClassifieds(url = constant.FILTER):
                     yearMin = constant.FILTERS["year"][0]
                     yearMax = constant.FILTERS["year"][1]
                     if (yearMin != -1 and year < yearMin):
-                        print(f"{bcolors.HEADER}", href, "year", year, "<", yearMin)
+                        print(f"{bcolors.HEADER}", href, "year", year, "<", yearMin, bcolors.ENDC)
                         continue
                     elif (yearMax != -1 and year > yearMax):
-                        print(f"{bcolors.HEADER}", href, "year", year, ">", yearMax)
+                        print(f"{bcolors.HEADER}", href, "year", year, ">", yearMax, bcolors.ENDC)
                         continue
 
                     # Filtering price
                     priceMin = constant.FILTERS["price"][0]
                     priceMax = constant.FILTERS["price"][1]
                     if (priceMin != -1 and price < priceMin):
-                        print(f"{bcolors.HEADER}", href, "price", price, "<", priceMin)
+                        print(f"{bcolors.HEADER}", href, "price", price, "<", priceMin, bcolors.ENDC)
                         continue
                     elif (priceMax != -1 and price > priceMax):
-                        print(f"{bcolors.HEADER}", href, "price", price, ">", priceMax)
+                        print(f"{bcolors.HEADER}", href, "price", price, ">", priceMax, bcolors.ENDC)
                         continue
 
                     # Filtering engine capacity
                     capMin = constant.FILTERS["capacity"][0]
                     capMax = constant.FILTERS["capacity"][1]
                     if (capMin != -1 and capacity < capMin):
-                        print(f"{bcolors.HEADER}", href, "engine capacity", capacity, "<", capMin)
+                        print(f"{bcolors.HEADER}", href, "engine capacity", capacity, "<", capMin, bcolors.ENDC)
                         continue
                     elif (capMax != -1 and price > capMax):
-                        print(f"{bcolors.HEADER}", href, "engine capacity", capacity, ">", capMax)
+                        print(f"{bcolors.HEADER}", href, "engine capacity", capacity, ">", capMax, bcolors.ENDC)
                         continue
 
-                    print(f"{bcolors.OKGREEN}Vehicle fits the request:", constant.BASE + href)
+                    print(f"{bcolors.OKGREEN}Vehicle fits the request:", bcolors.UNDERLINE + constant.BASE + href + bcolors.ENDC)
                 else:
-                    print(f"{bcolors.FAIL}Error: Unable to fetch data for", href)
+                    print(f"{bcolors.FAIL}Error: Unable to fetch data for", href + bcolors.ENDC)
             except IndexError:
                 continue
     else:
         print("Error fetching classifieds.")
     
     if "page" in nextPage:
-        print(f"{bcolors.OKBLUE}Switching page:", nextPage)
+        print(f"{bcolors.OKBLUE}Switching page:", nextPage + bcolors.ENDC)
         getClassifieds(constant.BASE + nextPage)
 
 getClassifieds()
