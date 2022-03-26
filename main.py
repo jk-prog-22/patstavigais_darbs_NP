@@ -43,32 +43,57 @@ def getClassifieds(url = constant.FILTER):
                 classified = session.get(constant.BASE + href, headers = getHeaders, timeout = constant.TIMEOUT)
                 if classified.status_code == 200:
                     cSoup = BeautifulSoup(classified.content, 'html.parser')
+
+                    # Parsing the vehicles year
                     try:
                         year = int(cSoup.find("td", {"id": "tdo_18"}).text.split()[0])
                     except AttributeError:
                         print(f"{bcolors.WARNING}Skipping: Unable to retrieve year for", href)
                         continue
+
+                    # Parsing the vehicles price
                     try:
                         price = int(cSoup.find("span", {"id": "tdo_8"}).text.replace(" ", "").replace("€", ""))
                     except AttributeError:
                         print(f"{bcolors.WARNING}Skipping: Unable to retrieve price for", href)
                         continue
 
+                    # Parsing the vehicles engine capacity
+                    try:
+                        capacity = float(cSoup.find("td", {"id": "tdo_15"}).text.split()[0])
+                    except AttributeError:
+                        print(f"{bcolors.WARNING}Skipping: Unable to retrieve engine capacity for", href)
+                        continue
+
                     # Filtering year
                     # TODO: Probably could use range with one if call
-                    if (constant.FILTERS["year"][0] != -1 and year < constant.FILTERS["year"][0]):
-                        print(f"{bcolors.HEADER}", href, "year", year, "<",constant.FILTERS["year"][0])
+                    yearMin = constant.FILTERS["year"][0]
+                    yearMax = constant.FILTERS["year"][1]
+                    if (yearMin != -1 and year < yearMin):
+                        print(f"{bcolors.HEADER}", href, "year", year, "<", yearMin)
                         continue
-                    elif (constant.FILTERS["year"][1] != -1 and year > constant.FILTERS["year"][1]):
-                        print(f"{bcolors.HEADER}", href, "year", year, ">", constant.FILTERS["year"][1])
+                    elif (yearMax != -1 and year > yearMax):
+                        print(f"{bcolors.HEADER}", href, "year", year, ">", yearMax)
                         continue
 
                     # Filtering price
-                    if (constant.FILTERS["price"][0] != -1 and price < constant.FILTERS["price"][0]):
-                        print(f"{bcolors.HEADER}", href, "price", price, "<", constant.FILTERS["price"][0])
+                    priceMin = constant.FILTERS["price"][0]
+                    priceMax = constant.FILTERS["price"][1]
+                    if (priceMin != -1 and price < priceMin):
+                        print(f"{bcolors.HEADER}", href, "price", price, "<", priceMin)
                         continue
-                    elif (constant.FILTERS["price"][1] != -1 and price > constant.FILTERS["price"][1]):
-                        print(f"{bcolors.HEADER}", href, "price", price, ">", constant.FILTERS["price"][1])
+                    elif (priceMax != -1 and price > priceMax):
+                        print(f"{bcolors.HEADER}", href, "price", price, ">", priceMax)
+                        continue
+
+                    # Filtering engine capacity
+                    capMin = constant.FILTERS["capacity"][0]
+                    capMax = constant.FILTERS["capacity"][1]
+                    if (capMin != -1 and capacity < capMin):
+                        print(f"{bcolors.HEADER}", href, "engine capacity", capacity, "<", capMin)
+                        continue
+                    elif (capMax != -1 and price > capMax):
+                        print(f"{bcolors.HEADER}", href, "engine capacity", capacity, ">", capMax)
                         continue
 
                     print(f"{bcolors.OKGREEN}Vehicle fits the request:", constant.BASE + href)
