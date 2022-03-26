@@ -29,11 +29,12 @@ if constant.DEBUG == True:
     requests_log.setLevel(logging.DEBUG)
     requests_log.propagate = True
 
-def getClassifieds(url = constant.FILTER, filters = constant.FILTERS):
+def getClassifieds(url = constant.FILTER):
     session = requests.Session()
-    getContents = session.get(constant.FILTER, headers = getHeaders, timeout = constant.TIMEOUT, allow_redirects = True)
+    getContents = session.get(url, headers = getHeaders, timeout = constant.TIMEOUT, allow_redirects = True)
     if getContents.status_code == 200:
         soup = BeautifulSoup(getContents.content, 'html.parser')
+        nextPage = soup.findAll("a", {"class" : "navi"})[-1]["href"].strip()
         vehicles = soup.findAll("tr", {"id" : lambda L: L and L.startswith('tr_')})
         for vehicle in vehicles:
             elements = vehicle.findAll("td")
@@ -77,5 +78,9 @@ def getClassifieds(url = constant.FILTER, filters = constant.FILTERS):
                 continue
     else:
         print("Error fetching classifieds.")
+    
+    if "page" in nextPage:
+        print(nextPage)
+        getClassifieds(constant.BASE + nextPage)
 
 getClassifieds()
